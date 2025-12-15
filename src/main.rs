@@ -185,6 +185,52 @@ the leaf n would be H( key_bytes || value_bytes ).
 
         - After update finishes, root() reflects the updated key–value mapping.
 
+Helper: compute leaf NodeId from key
+
+    Define a function inside impl SparseMerkleTree:
+
+    Signature: fn compute_leaf_node_id(&self, key: u64) -> NodeId
+
+        Behavior:
+
+            Start with:
+
+                level = 0
+
+                index = 0
+
+        For each depth step d from 0 to self.depth - 1:
+
+Determine which bit of the key to look at:
+
+Use the bit at position (self.depth - 1 - d) (so for depth 64, start from bit 63 down to 0).
+
+Extract that bit from the key (you’ll use bitwise operations in code, but don’t write them yet).
+
+If bit == 0:
+
+Go to the left child:
+
+index = index * 2
+
+If bit == 1:
+
+Go to the right child:
+
+index = index * 2 + 1
+
+Increment level by 1.
+
+After the loop:
+
+level should equal self.depth.
+
+index is the leaf index.
+
+Return a NodeId with this (level, index).
+
+This is how you map a u64 key to its leaf position.
+
 */
 
 
