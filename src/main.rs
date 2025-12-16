@@ -319,11 +319,21 @@ pub struct SparseMerkleTree {
 impl SparseMerkleTree {
     /// Creates an empty Sparse Merkle tree.
     pub fn new() -> Self {
-        unimplemented!()
+        let depth: u8 = 64;
+        let empty_hashes = build_empty_hashes(depth);
+        let nodes = HashMap::new();
+        SparseMerkleTree{
+            depth,
+            nodes, 
+            empty_hashes
+        }
     }
 
      /// Returns the current root hash.  If the tree is empty it will return empty_hashes[0]
      pub fn root(&self) -> Hash {
+        let root_id = NodeId{ level: 0, index: 0};
+        *self.nodes.get(&root_id).unwrap_or(&self.empty_hashes[0]);
+
         unimplemented!()
     }
 
@@ -342,7 +352,16 @@ impl SparseMerkleTree {
     
     ///Tells you exact position in the tree where a node exists by returning the node's NodeID.   
     fn compute_leaf_node_id(&self, key: Key) -> NodeId{
-        unimplemented!()
+        let mut index: u64 = 0u64;
+
+        for depth in 0..self.depth{
+            index <<=1;
+            let bit = (key >> (self.depth - 1 - depth) as u32) & 1;
+            index |= bit as u64;
+        }
+        NodeId { 
+            level: self.depth, 
+            index }
     }
    
 }
