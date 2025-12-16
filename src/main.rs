@@ -352,12 +352,15 @@ impl SparseMerkleTree {
     
     ///Tells you exact position in the tree where a node exists by returning the node's NodeID.   
     fn compute_leaf_node_id(&self, key: Key) -> NodeId{
-        let mut index: u64 = 0u64;
+        let mut index: u64 = 0;
 
         for depth in 0..self.depth{
-            index <<=1;
-            let bit = (key >> (self.depth - 1 - depth) as u32) & 1;
-            index |= bit as u64;
+            let shift = (self.depth - 1 - depth) as u32;
+            for depth in 0..self.depth{
+                let shift = self.depth - 1 - depth;
+                let bit = (key >> shift) & 1;
+                index = (index << 1) | bit;
+            }
         }
         NodeId { 
             level: self.depth, 
