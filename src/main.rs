@@ -332,10 +332,10 @@ impl SparseMerkleTree {
      /// Returns the current root hash.  If the tree is empty it will return empty_hashes[0]
      pub fn root(&self) -> Hash {
         let root_id = NodeId{ level: 0, index: 0};
-        *self.nodes.get(&root_id).unwrap_or(&self.empty_hashes[0]);
-
-        unimplemented!()
+        *self.nodes.get(&root_id).unwrap_or(&self.empty_hashes[0])
     }
+
+
 
     /// Inserts, updates, or deletes the value for a given key and updates the path to the root
     pub fn update(&mut self, key: Key, value: Option<Value>) {
@@ -343,11 +343,19 @@ impl SparseMerkleTree {
     }
 
     fn get_node_hash(&self, node_id: &NodeId) -> Hash{
-        unimplemented!()
+        self.nodes
+            .get(node_id)
+            .copied()
+            .unwrap_or(self.empty_hashes[node_id.level as usize])
     }
 
     fn set_node_hash(&mut self, node_id: NodeId, hash: Hash){
-        unimplemented!()
+        if hash == self.empty_hashes[node_id.level as usize] {
+            // Keep storage sparse by removing default hashes.
+            self.nodes.remove(&node_id);
+        } else {
+            self.nodes.insert(node_id, hash);
+        }
     }
     
     ///Tells you exact position in the tree where a node exists by returning the node's NodeID.   
@@ -372,5 +380,3 @@ impl SparseMerkleTree {
 fn main(){
     println!("Hello world!")
 }
-
-
