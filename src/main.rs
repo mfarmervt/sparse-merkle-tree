@@ -147,6 +147,15 @@ impl SparseMerkleTree {
         }
     }
 
+    fn prove(){
+        //write inclusion proof 
+        unimplemented!()
+    }
+
+    fn verify_proof(){
+        unimplemented!()
+    }
+
     ///Tells you exact position in the tree where a node exists by returning the node's NodeID.   
     fn compute_leaf_node_id(&self, key: Key) -> NodeId {
         let mut index: u64 = 0;
